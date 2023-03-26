@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  database:
+    container_name: 'database'
+    image: 'postgres:latest'
+    ports: 
+      - '5432:5432'
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    hostname: database
+    networks:
+      - stag-network
+
+  frontend:
+    container_name: 'frontend'
+    image: 'stag_frontend:latest'
+    build:
+      context: .
+      dockerfile: ./Frontend/Dockerfile
+    ports:
+      - '8100:80'
+    networks:
+      - stag-network
+
+  backend:
+    container_name: 'backend'
+    image: 'stag_image:latest'
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+    build:
+      context: .
+      dockerfile: ./stag/Dockerfile
+    ports:
+      - '8080:80'
+    networks:
+      - stag-network
+    volumes:
+      - appdata:/stag/config/
+
+volumes:
+  pgdata:
+  appdata:
+  
+networks:
+  stag-network:
+    driver: bridge

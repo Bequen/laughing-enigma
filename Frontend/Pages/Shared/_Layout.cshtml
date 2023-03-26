@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Frontend</title>
+    <link rel="stylesheet" href="~/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/Frontend.styles.css" asp-append-version="true"/>
+</head>
+<body>
+<div class="main-layout container-xxl d-grid">
+    <aside class="navbar">
+        <ul class="nav">
+            <li class="category">
+                <strong class="d-flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-calendar-range" viewBox="0 0 16 16">
+                    <path d="M9 7a1 1 0 0 1 1-1h5v2h-5a1 1 0 0 1-1-1zM1 9h4a1 1 0 0 1 0 2H1V9z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                    </svg>
+                    Lide
+                    </strong>
+                <ul class="small">
+                    <li><a class="@(Model is People.Index ? "selected" : "")" asp-page="/People">Lide</a></li>
+                    <li><a class="@(Model is People.Users ? "selected" : "")" asp-page="/People/Users">Uzivatele</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <strong class="d-flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-calendar-range" viewBox="0 0 16 16">
+                    <path d="M9 7a1 1 0 0 1 1-1h5v2h-5a1 1 0 0 1-1-1zM1 9h4a1 1 0 0 1 0 2H1V9z"/>
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                    </svg>
+                    Rozvrh
+                    </strong>
+                <ul class="small">
+                    <li><a class="@(Model is Timetable.Index ? "selected" : "")" asp-page="/Timetable/Index">Muj rozvrh</a></li>
+                    <li><a class="@(Model is Timetable.Subjects ? "selected" : "")" asp-page="/Timetable/Subjects">Moje predmety</a></li>
+                    <li><a class="@(Model is Timetable.Enrollment ? "selected" : "")" asp-page="/Timetable/Enrollment">Predzapis</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="user-info">
+            @using Microsoft.AspNetCore.Identity;
+            @{
+                var username = Context.Request.Cookies["user_name"];
+                if(username != null) {
+                    <div>
+                        <label>@username</label>
+                    </div>
+                }
+            }
+        </div>
+    </aside>
+    <main role="main" class="p-3 pt-5 small">
+        @RenderBody()
+    </main>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

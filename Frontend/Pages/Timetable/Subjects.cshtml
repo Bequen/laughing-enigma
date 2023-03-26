@@ -1,0 +1,119 @@
+@page "/Timetable/Subjects/{subjectId?}"
+@model Frontend.Pages.Timetable.Subjects
+
+@{
+    
+}
+
+<style>
+    .list-group {
+        max-width: 460px;
+        margin: 4rem auto;
+    }
+
+    .form-check-input:checked + .form-checked-content {
+        opacity: .5;
+    }
+
+    .form-check-input-placeholder {
+        border-style: dashed;
+    }
+    [contenteditable]:focus {
+        outline: 0;
+    }
+
+    .list-group-checkable .list-group-item {
+    cursor: pointer;
+    }
+    .list-group-item-check {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+    }
+    .list-group-item-check:hover + .list-group-item {
+        background-color: var(--bs-light);
+    }
+    .list-group-item-checked {
+        color: #fff;
+        background-color: var(--bs-blue);
+        border: none;
+    }
+    .list-group-item-check[disabled] + .list-group-item,
+    .list-group-item-check:disabled + .list-group-item {
+        pointer-events: none;
+        filter: none;
+        opacity: .5;
+    }
+
+    .list-group-radio .list-group-item {
+        cursor: pointer;
+        border-radius: .5rem;
+    }
+    .list-group-radio .form-check-input {
+        z-index: 2;
+        margin-top: -.5em;
+    }
+    .list-group-radio .list-group-item:hover,
+    .list-group-radio .list-group-item:focus {
+        background-color: var(--bs-light);
+    }
+    .list-group-radio .form-check-input[disabled] + .list-group-item,
+    .list-group-radio .form-check-input:disabled + .list-group-item {
+        pointer-events: none;
+        filter: none;
+        opacity: .5;
+    }
+    .list-group {
+        height: 100%;
+        margin: 0;
+        align-content: start;
+    }
+
+    .list-group-item {
+        border-width: 1px !important;
+    }
+</style>
+
+<div class="subjects">
+    <div class="list-group list-group-checkable d-grid gap-2 border-0 w-100 align-items-start">
+        @if (Model.subjects != null) {
+            @foreach(var subject in Model.subjects)
+            {
+                @* <input class="list-group-item-check pe-none" type="radio" name="listGroupCheckableRadios" id="listGroupCheckableRadios@(subject.SubjectId)" value=""> *@
+                @if(Model.subject != null && subject.SubjectId == Model.subject.SubjectId) {
+                    <a class="list-group-item list-group-item-checked rounded-3 py-3" for="listGroupCheckableRadios@(subject.SubjectId)">
+                        @subject.Name
+                        <span class="d-block small opacity-50">@subject.Description</span>
+                    </a>
+                } else {
+                    <a href="/Timetable/Subjects/@(subject.SubjectId)" class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios@(subject.SubjectId)">
+                        @subject.Name
+                        <span class="d-block small opacity-50">@subject.Description</span>
+                    </a>
+                }
+            }
+        }
+    </div>
+    @if(Model.subject != null) {
+        <div class="subject-info small">
+            <form method="post" action="">
+                <input name="subjectId" type="number" class="d-none" value="@Model.subject.SubjectId">
+                <div class="input-group mb-3">
+                    <div class="form-floating">
+                        <input disabled name="Name" id="nameInput" placeholder="Name" type="text" class="form-control" value="@Model.subject.Name">
+                        <label for="nameInput">Name</label>
+                    </div>
+
+                    <div class="form-floating" style="max-width: 250px">
+                        <input disabled name="ShortName" id="shortNameInput" placeholder="Short Name" type="text" class="form-control" value="@Model.subject.ShortName">
+                        <label for="shortNameInput">Short Name</label>
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <textarea disabled name="Description" class="form-control" placeholder="Description" id="descInput" style="height: 100px">@Model.subject.Description</textarea>
+                    <label for="descInput">Description</label>
+                </div>
+            </form>
+        </div>
+    }
+</div>

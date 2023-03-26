@@ -1,0 +1,122 @@
+@page "/Timetable"
+@model Frontend.Pages.Timetable.Index
+
+@{
+}
+
+<style>
+    :root {
+        --timetable-border: 1px solid rgb(49, 49, 49);
+    }
+
+    .timetable-row {
+        width: 100%;
+        min-height: 3rem;
+        display: inline-grid;
+        grid-auto-flow: row;
+        justify-content: start;
+    }
+
+    .timetable-row>* {
+        grid-row: 1;
+        border-radius: 5px;
+    }
+    .timetable td {
+        position: relative;
+    }
+
+    .time-block {
+        background-color: rgb(132, 221, 132);
+        position: absolute;
+        color: var(--bs-body-bg);
+        height: 100%;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .time-block-time {
+        font-size: 0.725rem;
+    }
+    .time-block-time>:first-child {
+        float: left;
+    }
+
+    .time-block-time>:last-child {
+        float: right;
+    }
+
+    .time-block-name {
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        display: block;
+    }
+
+    .timetable-column-header {
+        padding-left: 1.5rem;
+    }
+
+    .timetable-time-header td {
+        text-align: left;
+    }
+
+    .timetable-time-header {
+        width: 100%;
+        border: none;
+    }
+
+    .timetable th {
+        padding: 0;
+        border: none;
+    }
+</style>
+
+<div>
+    <table class="timetable">
+        <colgroup>
+            <col span="1" style="min-width: 100px;">
+            <col span="1" style="width: 100%;">
+        </colgroup>
+        <thead>
+            <th></th>
+            <th>
+                <table class="timetable-time-header">
+                    <tr>
+                        <td>08:00</td>
+                        <td>10:00</td>
+                        <td>12:00</td>
+                        <td>14:00</td>
+                        <td>16:00</td>
+                        <td>18:00</td>
+                        <td>20:00</td>
+                        <td>22:00</td>
+                    </tr>
+                </div>
+            </th>
+        </thead>
+        <tbody>
+            <h2>Rozvrh</h2>
+            @for(int i = 1; i <= 7; i++) {
+                var dayStart = 7 * 60;
+                var dayEnd = 22 * 60;
+                var dayDuration = (float)dayEnd - dayStart;
+                <tr>
+                    <td class="timetable-column-header">@((DayOfWeek)i)</td>
+                    <td class="timetable-row">
+                        @foreach(var time in Model.Times.Where(x => x.StartsAt.DayOfWeek == (DayOfWeek)i)) {
+                            var offset = ((time.StartsAt.Minute + time.StartsAt.Hour * 60.0 - dayStart)/dayDuration*100.0);
+                            var duration = time.EndsAt - time.StartsAt;
+                            var width = (duration.TotalMinutes/dayDuration*100.0);
+                            <div class="time-block" style="left: @offset%; width:@width%">
+                                <span class="time-block-name">@time.Subject.ShortName</span>
+                                <div class="time-block-time">
+                                    <span>@time.StartsAt.ToString("hh:mm")</span>
+                                    <span>@time.EndsAt.ToString("hh:mm")</span>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
