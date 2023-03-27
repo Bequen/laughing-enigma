@@ -10,7 +10,6 @@ using Microsoft.OpenApi.Models;
 using stag.Controllers;
 using stag.Database;
 using stag.Database.Models;
-using System.Security.Claims;
 using Stag.Auth;
 using Stag;
 using Stag.Controllers;
@@ -28,7 +27,6 @@ for (int i = 0; i < args.Count(); i++) {
 }
 
 Config config = Config.Load();
-config.Save();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -171,9 +169,7 @@ if(config.Initialize) {
                     ShortName = "inf"
                 });
 
-                context.SaveChanges();
-
-                var departmentService = new DepartmentService();
+                var departmentService = new DepartmentService(context);
                 var algebra = await departmentService.CreateSubject(department.Entity.DepartmentId, new Model.Request.SubjectPutRequest() {
                     Name = "Algebra 2",
                     ShortName = "AL2",
@@ -186,9 +182,7 @@ if(config.Initialize) {
                     Description = "Some description of C#"
                 });
 
-                var subjectService = new SubjectService();
-
-                context.SaveChanges();
+                var subjectService = new SubjectService(context);
 
                 await subjectService.SetLecturer(jcs.SubjectId, userId);
                 await subjectService.SetPracticioner(algebra.SubjectId, userId);
@@ -210,6 +204,8 @@ if(config.Initialize) {
                         Frequence = 1
                     }
                 });
+
+                await context.SaveChangesAsync();
             }
 
         }

@@ -19,10 +19,12 @@ namespace Stag.Controllers;
 public class SubjectController : ControllerBase
 {
     private readonly SubjectService subjectService;
+    private readonly StagContext context;
     
     public SubjectController(StagContext context)
     {
         subjectService = new SubjectService(context);
+        this.context = context;
     }
 
     private string? GetToken() {
@@ -60,6 +62,7 @@ public class SubjectController : ControllerBase
         
             if(!string.IsNullOrEmpty(userId)) {
                 var entity = await subjectService.CreateLectureTimetable(userId, subjectId);
+                await context.SaveChangesAsync();
                 return Created(nameof(CreateLectureTimetable), entity);
             } else {
                 return Unauthorized();
@@ -77,6 +80,7 @@ public class SubjectController : ControllerBase
         
             if(!string.IsNullOrEmpty(userId)) {
                 var entity = await subjectService.CreatePracticeTimetable(userId, subjectId);
+                await context.SaveChangesAsync();
                 return Created(nameof(CreateLectureTimetable), entity);
             } else {
                 return Unauthorized();
@@ -90,6 +94,7 @@ public class SubjectController : ControllerBase
     [HttpPost("TimetableEvent/{eventId}/CreateTimes")]
     public async Task<IActionResult> SetTimes(int subjectId, int eventId, [FromBody] IEnumerable<SubjectSetTimeRequest> times) {
         await subjectService.SetTimes(subjectId, eventId, times);
+        await context.SaveChangesAsync();
 
         return Ok();
     }
@@ -98,7 +103,8 @@ public class SubjectController : ControllerBase
     [Authorize(Policy="SetSubjectGarantPermission")]
     [HttpGet("SetGarant/{userId}")]
     public async Task<IActionResult> SetGarant(int subjectId, string userId) {
-        subjectService.SetGarant(subjectId, userId);
+        await subjectService.SetGarant(subjectId, userId);
+        await context.SaveChangesAsync();
         
         return Ok();
     }
@@ -108,6 +114,7 @@ public class SubjectController : ControllerBase
     public async Task<IActionResult> SetPracticioner(int subjectId, string userId)
     {
         await subjectService.SetPracticioner(subjectId, userId);
+        await context.SaveChangesAsync();
 
         return Ok();
     }
@@ -117,6 +124,7 @@ public class SubjectController : ControllerBase
     public async Task<IActionResult> SetLecturer(int subjectId, string userId)
     {
         await subjectService.SetLecturer(subjectId, userId);
+        await context.SaveChangesAsync();
 
         return Ok();
     }

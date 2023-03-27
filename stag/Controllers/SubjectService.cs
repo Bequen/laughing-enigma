@@ -25,7 +25,7 @@ public class SubjectService {
             row.Description = subject.Description;
             row.Name = subject.Name;
             row.ShortName = subject.ShortName;
-            await _context.SaveChangesAsync();
+            // await _context.SaveChangesAsync();
         } else {
             throw new Exception("No such subject");
         }
@@ -39,7 +39,7 @@ public class SubjectService {
                 OwnerId = userId
             });
 
-            await _context.SaveChangesAsync();
+            // await _context.SaveChangesAsync();
 
             return result.Entity;
         } else {
@@ -48,7 +48,6 @@ public class SubjectService {
     }
 
     public async Task<TimetableEvent> CreatePracticeTimetable(string userId, int subjectId) {
-        
         if(!string.IsNullOrEmpty(userId)) {
             var result = _context.TimetableEvents.Add(new TimetableEvent() {
                 SubjectId = subjectId,
@@ -56,7 +55,7 @@ public class SubjectService {
                 OwnerId = userId
             });
 
-            await _context.SaveChangesAsync();
+            // await _context.SaveChangesAsync();
 
             return result.Entity;
         } else {
@@ -71,8 +70,6 @@ public class SubjectService {
             SubjectId = subjectId,
             UserId = userId
         });
-
-        await _context.SaveChangesAsync();
     }
 
     public async Task SetLecturer(int subjectId, string userId) {
@@ -82,8 +79,6 @@ public class SubjectService {
             SubjectId = subjectId,
             UserId = userId
         });
-
-        await _context.SaveChangesAsync();
     }
 
     public async Task SetPracticioner(int subjectId, string userId) {
@@ -93,8 +88,6 @@ public class SubjectService {
             SubjectId = subjectId,
             UserId = userId
         });
-
-        await _context.SaveChangesAsync();
     }
 
     private async Task<List<TimetableEventTime>> CreateTimesWithFrequency(int eventId, SubjectSetTimeRequest time, int jumpDays) {
@@ -105,7 +98,7 @@ public class SubjectService {
                             .FirstOrDefault();
 
         if(semester == null) {
-            throw new Exception("Failed to find semester for subject.");
+            throw new Exception("Failed to find semester for subject. Please insert a semester to be able to insert timetable with frequency.");
         }
 
         while(time.StartsAt <= semester.EndsAt) {
@@ -147,8 +140,7 @@ public class SubjectService {
             }
         }
 
-        _context.TimetableEventTimes.AddRange(entities);
-        await _context.SaveChangesAsync();
+        await _context.TimetableEventTimes.AddRangeAsync(entities);
     }
 
     public async Task<IEnumerable<TimetableEvent>> GetSubjectTimetableEvents(int subjectId) {
