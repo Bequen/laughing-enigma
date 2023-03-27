@@ -3,6 +3,7 @@ using Model.Response;
 using Model.Request;
 using Microsoft.AspNetCore.Mvc;
 using Frontend.Api.Stag;
+using System.Net;
 
 namespace Frontend.Pages.Timetable;
 
@@ -39,15 +40,22 @@ public class Subjects : PageModel
     /// <param name="form">Form values containing info about subject.</param>
     /// <returns></returns>
     public async Task<IActionResult> OnPostAsync(SubjectSetForm form) {
-        Console.WriteLine("Fuck");
         if(subject != null) {
-            SubjectSetRequest request = new SubjectSetRequest() {
-                Name = form.Name,
-                ShortName = form.ShortName,
-                Description = form.Description
-            };
-            subjectHandler.AuthToken = Request.Cookies["user_token"] as string ?? String.Empty;
-            await subjectHandler.Set(form.SubjectId, request);
+            try {
+                SubjectSetRequest request = new SubjectSetRequest() {
+                    Name = form.Name,
+                    ShortName = form.ShortName,
+                    Description = form.Description
+                };
+                subjectHandler.AuthToken = Request.Cookies["user_token"] as string ?? String.Empty;
+                await subjectHandler.Set(form.SubjectId, request);
+            } catch(HttpRequestException e) {
+                if(e.StatusCode == HttpStatusCode.Unauthorized) {
+                    return RedirectToPage("/Auth");
+                }
+            } catch {
+
+            }
         }
 
         return Page();
@@ -59,7 +67,7 @@ public class Subjects : PageModel
         try {
             subjects = (await personHandler.GetSubjects()).ToList() ?? new List<SubjectGetResponse>();
         } catch (HttpRequestException e) {
-            if(e.StatusCode == System.Net.HttpStatusCode.Unauthorized) {
+            if(e.StatusCode == HttpStatusCode.Unauthorized) {
                 return RedirectToPage("/Auth");
             }
         } catch {

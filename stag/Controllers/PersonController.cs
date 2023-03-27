@@ -79,9 +79,7 @@ public class PersonController : ControllerBase {
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return new List<TimetableEventTimeResponse>();
         }
-
-        Console.WriteLine($"Getting times for user {userId} prd");
-
+        
         return _context.TimetableEventTimes.Join(_context.TimetableEvents,
                                                 time => time.TimetableEventId,
                                                 ev => ev.TimetableEventId,
