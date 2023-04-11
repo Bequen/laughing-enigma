@@ -169,6 +169,8 @@ if(config.Initialize) {
                     ShortName = "inf"
                 });
 
+                await context.SaveChangesAsync();
+
                 var departmentService = new DepartmentService(context);
                 var algebra = await departmentService.CreateSubject(department.Entity.DepartmentId, new Model.Request.SubjectPutRequest() {
                     Name = "Algebra 2",
@@ -182,12 +184,16 @@ if(config.Initialize) {
                     Description = "Some description of C#"
                 });
 
+                await context.SaveChangesAsync();
+
                 var subjectService = new SubjectService(context);
 
                 await subjectService.SetLecturer(jcs.SubjectId, userId);
                 await subjectService.SetPracticioner(algebra.SubjectId, userId);
 
                 var lectureEvent = await subjectService.CreateLectureTimetable(userId, jcs.SubjectId);
+                await context.SaveChangesAsync();
+
                 await subjectService.SetTimes(jcs.SubjectId, lectureEvent.TimetableEventId, new List<SubjectSetTimeRequest>() {
                     new SubjectSetTimeRequest() {
                         StartsAt = new DateTime(2023, 2, 14, 18, 30, 0),
@@ -197,6 +203,7 @@ if(config.Initialize) {
                 });
 
                 var practiseEvent = await subjectService.CreatePracticeTimetable(userId, algebra.SubjectId);
+                await context.SaveChangesAsync();
                 await subjectService.SetTimes(algebra.SubjectId, practiseEvent.TimetableEventId, new List<SubjectSetTimeRequest>() {
                     new SubjectSetTimeRequest() {
                         StartsAt = new DateTime(2023, 2, 14, 8, 0, 0),
