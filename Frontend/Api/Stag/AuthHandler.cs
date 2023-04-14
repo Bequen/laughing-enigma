@@ -4,7 +4,7 @@ using Model.Request;
 using Model.Response;
 
 class AuthHandler : ApiHandler {
-    public AuthHandler(string? auth = null) : base(new Uri("http://backend:80/Auth/"), auth) {
+    public AuthHandler(string? auth = null) : base("Auth/", auth) {
 
     }
 

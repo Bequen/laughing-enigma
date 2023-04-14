@@ -10,4 +10,7 @@ public class SubjectPutRequest
     public String ShortName { get; set; }
     [Required]
     public String Description { get; set; }
+
+    [Required]
+    public String GarantUserId { get; set; }
 }

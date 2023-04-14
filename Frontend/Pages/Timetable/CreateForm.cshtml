@@ -1,0 +1,25 @@
+@page "/Timetable/Subjects/CreateForm"
+@model Frontend.Pages.Timetable.CreateForm
+
+@{
+    
+}
+
+<div class="container">
+    <form method="post">
+        <select id="garantUserId" name="garantUserId">
+            @foreach(var person in Model.People) {
+                <option value="@person.UserId">@person.FirstName @person.LastName</option>
+            }
+        </select>
+
+        <label for="name">Name:</label>
+        <input class="form-control form-control-sm" type="text" name="name" id="name">
+        <label for="shortName">Short name:</label>
+        <input class="form-control form-control-sm" type="text" name="shortName" id="shortName">
+        <label for="description">Description:</label>
+        <textarea class="form-control form-control-sm" name="description" id="description" cols="30"></textarea>
+
+        <button class="btn btn-primary btn-sm">Create</button>
+    </form>
+</div>

@@ -25,7 +25,6 @@ public class SubjectService {
             row.Description = subject.Description;
             row.Name = subject.Name;
             row.ShortName = subject.ShortName;
-            // await _context.SaveChangesAsync();
         } else {
             throw new Exception("No such subject");
         }
@@ -72,7 +71,7 @@ public class SubjectService {
         });
     }
 
-    public async Task SetLecturer(int subjectId, string userId) {
+    public async Task AddLecturer(int subjectId, string userId) {
         await _context.SubjectRelations.AddAsync(new SubjectRelation()
         {
             RelationType = RelationType.Lecturer,
@@ -81,7 +80,7 @@ public class SubjectService {
         });
     }
 
-    public async Task SetPracticioner(int subjectId, string userId) {
+    public async Task AddPracticioner(int subjectId, string userId) {
         await _context.SubjectRelations.AddAsync(new SubjectRelation()
         {
             RelationType = RelationType.Practicioner,

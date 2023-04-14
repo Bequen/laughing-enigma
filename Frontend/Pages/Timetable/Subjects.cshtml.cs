@@ -24,12 +24,14 @@ public class SubjectSetForm {
 
 public class Subjects : PageModel
 {
-    public List<SubjectGetResponse> subjects = new List<SubjectGetResponse>();
-    public SubjectGetResponse? subject;
+    public List<SubjectGetResponse> subjects { get; set; } = new List<SubjectGetResponse>();
+    public SubjectGetResponse? subject { get; set; }
 
     private PersonHandler personHandler = new PersonHandler();
 
     private SubjectHandler subjectHandler = new SubjectHandler();
+
+    public List<TimetableEventGetResponse> TimetableEvents { get; set; } = new List<TimetableEventGetResponse>();
 
     [BindProperty]
     public SubjectSetForm subjectSetForm { get; set; }
@@ -40,22 +42,22 @@ public class Subjects : PageModel
     /// <param name="form">Form values containing info about subject.</param>
     /// <returns></returns>
     public async Task<IActionResult> OnPostAsync(SubjectSetForm form) {
-        if(subject != null) {
-            try {
-                SubjectSetRequest request = new SubjectSetRequest() {
-                    Name = form.Name,
-                    ShortName = form.ShortName,
-                    Description = form.Description
-                };
-                subjectHandler.AuthToken = Request.Cookies["user_token"] as string ?? String.Empty;
-                await subjectHandler.Set(form.SubjectId, request);
-            } catch(HttpRequestException e) {
-                if(e.StatusCode == HttpStatusCode.Unauthorized) {
-                    return RedirectToPage("/Auth");
-                }
-            } catch {
 
+        Console.WriteLine("Updating subject");
+        try {
+            SubjectSetRequest request = new SubjectSetRequest() {
+                Name = form.Name,
+                ShortName = form.ShortName,
+                Description = form.Description
+            };
+            subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+            await subjectHandler.Set(form.SubjectId, request);
+        } catch(HttpRequestException e) {
+            if(e.StatusCode == HttpStatusCode.Unauthorized) {
+                return RedirectToPage("/Auth");
             }
+        } catch {
+            throw;
         }
 
         return Page();
@@ -63,7 +65,8 @@ public class Subjects : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        personHandler.AuthToken = Request.Cookies["user_token"] as string ?? String.Empty;
+        personHandler.AuthToken = Request.Cookies["user_token"] as string;
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
         try {
             subjects = (await personHandler.GetSubjects()).ToList() ?? new List<SubjectGetResponse>();
         } catch (HttpRequestException e) {
@@ -71,11 +74,13 @@ public class Subjects : PageModel
                 return RedirectToPage("/Auth");
             }
         } catch {
-            
+            throw;
         }
 
         if(RouteData.Values["subjectId"] != null) {
             subject = subjects.FirstOrDefault(x => x.SubjectId == int.Parse((string)(RouteData.Values["subjectId"])));
+        
+            TimetableEvents = (await subjectHandler.GetTimetableEvents(subject.SubjectId)).ToList();
         }
 
         return Page();

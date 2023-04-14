@@ -67,6 +67,11 @@ CREATE TABLE public.AspNetUserLogins
 
 
 
+CREATE TABLE IF NOT EXISTS person (
+    user_id VARCHAR(256) PRIMARY KEY REFERENCES aspnetusers(Id)
+    first_name VARCHAR(256) NOT NULL,
+    last_name VARCHAR(256) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS departments (
     department_id SERIAL PRIMARY KEY,

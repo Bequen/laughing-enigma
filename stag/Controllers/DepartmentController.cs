@@ -21,6 +21,7 @@ public class DepartmentController : ControllerBase
 {
     private readonly StagContext _context;
     private readonly DepartmentAuthorizationHandler _authService;
+    private DepartmentService departmentService = new DepartmentService();
     
     public DepartmentController(StagContext context)
     {
@@ -30,15 +31,12 @@ public class DepartmentController : ControllerBase
     [Authorize(Policy = "CreateDepartmentSubjectPermission")]
     [HttpPut("CreateSubject")]
     public async Task<IActionResult> CreateSubject(int departmentId, SubjectPutRequest request) {
-        var result = await _context.Subjects.AddAsync(new Subject() {
-            Name = request.Name,
-            ShortName = request.ShortName,
-            Description = request.Description,
-            DepartmentId = departmentId
+        var result = await departmentService.CreateSubject(departmentId, request);
+
+        return Created(nameof(CreateSubject), new Subject() {
+            Name = result.Name,
+            ShortName = result.ShortName,
+            Description = result.Description
         });
-
-        await _context.SaveChangesAsync();
-
-        return Created(nameof(CreateSubject), result.Entity);
     }
 }

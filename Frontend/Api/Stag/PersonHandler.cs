@@ -5,8 +5,14 @@ using Model.Request;
 using Model.Response;
 
 class PersonHandler : ApiHandler {
-    public PersonHandler(string? auth = null) : base(new Uri("http://backend:80/Person/"), auth) {
+    public PersonHandler(string? auth = null) : base("Person/", auth) {
 
+    }
+
+    public async Task<IEnumerable<PersonGetResponse>> GetPersons() {
+        var response = await Get("GetUsers");
+
+        return await response.Content.ReadFromJsonAsync<IEnumerable<PersonGetResponse>>();
     }
 
     public async Task<IEnumerable<SubjectGetResponse>?> GetSubjects() {

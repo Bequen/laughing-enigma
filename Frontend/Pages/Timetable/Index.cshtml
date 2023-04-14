@@ -102,17 +102,19 @@
                 <tr>
                     <td class="timetable-column-header">@((DayOfWeek)i)</td>
                     <td class="timetable-row">
-                        @foreach(var time in Model.Times.Where(x => x.StartsAt.DayOfWeek == (DayOfWeek)i)) {
-                            var offset = ((time.StartsAt.Minute + time.StartsAt.Hour * 60.0 - dayStart)/dayDuration*100.0);
-                            var duration = time.EndsAt - time.StartsAt;
-                            var width = (duration.TotalMinutes/dayDuration*100.0);
-                            <div class="time-block" style="left: @offset%; width:@width%">
-                                <span class="time-block-name">@time.Subject.ShortName</span>
-                                <div class="time-block-time">
-                                    <span>@time.StartsAt.ToString("hh:mm")</span>
-                                    <span>@time.EndsAt.ToString("hh:mm")</span>
+                        @if(Model.Times != null) {
+                            @foreach(var time in Model.Times.Where(x => x.StartsAt.DayOfWeek == (DayOfWeek)i)) {
+                                var offset = ((time.StartsAt.Minute + time.StartsAt.Hour * 60.0 - dayStart)/dayDuration*100.0);
+                                var duration = time.EndsAt - time.StartsAt;
+                                var width = (duration.TotalMinutes/dayDuration*100.0);
+                                <div class="time-block" style="left: @offset%; width:@width%">
+                                    <span class="time-block-name">@time.Subject.ShortName</span>
+                                    <div class="time-block-time">
+                                        <span>@time.StartsAt.ToString("hh:mm")</span>
+                                        <span>@time.EndsAt.ToString("hh:mm")</span>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         }
                     </td>
                 </tr>

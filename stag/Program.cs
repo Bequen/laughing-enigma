@@ -170,6 +170,10 @@ if(config.Initialize) {
                 });
 
                 await context.SaveChangesAsync();
+                context.DepartmentRelations.Add(new DepartmentRelation() {
+                    DepartmentId = department.Entity.DepartmentId,
+                    UserId = userId
+                });
 
                 var departmentService = new DepartmentService(context);
                 var algebra = await departmentService.CreateSubject(department.Entity.DepartmentId, new Model.Request.SubjectPutRequest() {
@@ -188,8 +192,8 @@ if(config.Initialize) {
 
                 var subjectService = new SubjectService(context);
 
-                await subjectService.SetLecturer(jcs.SubjectId, userId);
-                await subjectService.SetPracticioner(algebra.SubjectId, userId);
+                await subjectService.AddLecturer(jcs.SubjectId, userId);
+                await subjectService.AddPracticioner(algebra.SubjectId, userId);
 
                 var lectureEvent = await subjectService.CreateLectureTimetable(userId, jcs.SubjectId);
                 await context.SaveChangesAsync();

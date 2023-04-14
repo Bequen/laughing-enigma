@@ -25,6 +25,14 @@ public class DepartmentService {
         });
 
         await _context.SaveChangesAsync();
+        
+        await _context.SubjectRelations.AddAsync(new SubjectRelation() {
+            SubjectId = result.Entity.SubjectId,
+            UserId = request.GarantUserId,
+            RelationType = RelationType.Garant
+        });
+
+        await _context.SaveChangesAsync();
 
         return result.Entity;
     }

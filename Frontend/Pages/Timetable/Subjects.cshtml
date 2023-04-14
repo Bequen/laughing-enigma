@@ -95,24 +95,44 @@
     </div>
     @if(Model.subject != null) {
         <div class="subject-info small">
-            <form method="post" action="">
+            <form method="post">
                 <input name="subjectId" type="number" class="d-none" value="@Model.subject.SubjectId">
                 <div class="input-group mb-3">
                     <div class="form-floating">
-                        <input disabled name="Name" id="nameInput" placeholder="Name" type="text" class="form-control" value="@Model.subject.Name">
+                        <input name="Name" id="nameInput" placeholder="Name" type="text" class="form-control" value="@Model.subject.Name">
                         <label for="nameInput">Name</label>
                     </div>
 
                     <div class="form-floating" style="max-width: 250px">
-                        <input disabled name="ShortName" id="shortNameInput" placeholder="Short Name" type="text" class="form-control" value="@Model.subject.ShortName">
+                        <input name="ShortName" id="shortNameInput" placeholder="Short Name" type="text" class="form-control" value="@Model.subject.ShortName">
                         <label for="shortNameInput">Short Name</label>
                     </div>
                 </div>
 
                 <div class="form-floating mb-3">
-                    <textarea disabled name="Description" class="form-control" placeholder="Description" id="descInput" style="height: 100px">@Model.subject.Description</textarea>
+                    <textarea name="Description" class="form-control" placeholder="Description" id="descInput" style="height: 100px">@Model.subject.Description</textarea>
                     <label for="descInput">Description</label>
                 </div>
+
+                @* Is garant *@
+                @if(Model.subject.RelationType == 1) {
+                    <input type="submit" class="btn btn-primary btn-sm" value="Save">
+                }
+                @if(Model.subject.RelationType == 2) {
+                    <div>
+                        @foreach (var ev in Model.TimetableEvents)
+                        {
+                            <div>
+                                @ev.OwnerId
+                            </div>
+                        }
+                        <div>
+                            <button></button>
+                        </div>
+                    </div>
+                } else if(Model.subject.RelationType == 3) {
+
+                }
             </form>
         </div>
     }

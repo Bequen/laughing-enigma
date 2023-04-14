@@ -31,12 +31,11 @@ public class PersonController : ControllerBase {
         return Ok();
     }
 
-    [HttpGet("Get/{page?}/{contains?}")]
-    public IEnumerable<PersonGetResponse> Filter(int? page, String? contains) {
-        return _context.Persons.Where(x => (x.FirstName + " " + x.LastName).Contains(contains ?? ""))
-                    .Skip((page ?? 0) * 10).Take(10)
+    [HttpGet("GetUsers")]
+    public IEnumerable<PersonGetResponse> Filter([FromQuery] int offset = 0, [FromQuery] int amount = 100) {
+        return _context.Persons
+                    .Skip(offset).Take(Math.Max(amount, 100))
                     .Select(x => new PersonGetResponse { 
-                        PersonId = x.PersonId,
                         UserId = x.UserId,
                         FirstName = x.FirstName,
                         LastName = x.LastName
@@ -68,8 +67,9 @@ public class PersonController : ControllerBase {
                         SubjectId = x.subject.SubjectId,
                         Name = x.subject.Name,
                         ShortName = x.subject.ShortName,
-                        Description = x.subject.Description
-                    }).ToList().GroupBy(x => x.SubjectId, (x, el) => el.First());
+                        Description = x.subject.Description,
+                        RelationType = (int)x.relation.RelationType
+                    }).ToList();/* .GroupBy(x => x.SubjectId, (x, el) => el.First()); */
     }
 
     [HttpGet("GetTimetableTimes")]
