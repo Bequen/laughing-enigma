@@ -118,22 +118,47 @@
                 @if(Model.subject.RelationType == 1) {
                     <input type="submit" class="btn btn-primary btn-sm" value="Save">
                 }
-                @if(Model.subject.RelationType == 2) {
-                    <div>
-                        @foreach (var ev in Model.TimetableEvents)
-                        {
-                            <div>
-                                @ev.OwnerId
-                            </div>
-                        }
-                        <div>
-                            <button></button>
-                        </div>
-                    </div>
-                } else if(Model.subject.RelationType == 3) {
-
-                }
             </form>
+
+            <hr class="my-4">
+
+            <div>
+                @foreach (var ev in Model.SubjectRelations)
+                {
+                    <div>
+                        <span>@ev.Person.FirstName @ev.Person.LastName</span>
+                        @switch (ev.RelationType)
+                        {
+                            case 0:
+                                <span class="badge bg-secondary">Enrolled</span>
+                                break;
+                            case 1:
+                                <span class="badge bg-secondary">Garant</span>
+                                break;
+                            case 2:
+                                <span class="badge bg-secondary">Lecturer</span>
+                                break;
+                            case 3:
+                                <span class="badge bg-secondary">Practicioner</span>
+                                break;
+                        }
+                    </div>
+                }
+                <div>
+                    <form method="post" asp-page-handler="AddUser">
+                        <input name="subjectId" type="number" class="d-none" value="@Model.subject.SubjectId">
+                        <input name="userId" id="userId" type="text">
+
+                        <select id="Role" name="Role">
+                            <option value="0">Lecture</option>
+                            <option value="1">Practise</option>
+                            <option value="2">Seminar</option>
+                        </select>
+
+                        <input type="submit" class="btn btn-primary btn-sm" value="Add">
+                    </form>
+                </div>
+            </div>
         </div>
     }
 </div>

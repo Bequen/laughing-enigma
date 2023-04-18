@@ -23,8 +23,21 @@ class SubjectHandler : ApiHandler {
         await Get($"{subjectId}/SetGarant/{userId}");
     }
 
+    public async Task SetPracticioner(int subjectId, String userId) {
+        await Get($"{subjectId}/SetPracticioner/{userId}");
+    }
+
+    public async Task SetTutor(int subjectId, String userId) {
+        await Get($"{subjectId}/SetTutor/{userId}");
+    }
+
     public async Task<IEnumerable<TimetableEventGetResponse>> GetTimetableEvents(int subjectId) {
         var response = await Get($"{subjectId}/GetTimetableEvents");
         return await response.Content.ReadFromJsonAsync<IEnumerable<TimetableEventGetResponse>>() ?? new List<TimetableEventGetResponse>();
+    }
+
+    public async Task<IEnumerable<SubjectRelationGetResponse>> GetSubjectRelations(int subjectId) {
+        var response = await Get($"{subjectId}/GetSubjectRelations");
+        return await response.Content.ReadFromJsonAsync<IEnumerable<SubjectRelationGetResponse>>() ?? new List<SubjectRelationGetResponse>();
     }
 }

@@ -21,7 +21,7 @@ public class PersonController : ControllerBase {
     [HttpPost("Add")]
     public async Task<IActionResult> Add([FromBody] PersonAddRequest person) {
         _context.Persons.Add(new Person {
-            UserId = person.UserId,
+            PersonId = person.UserId,
             FirstName = person.FirstName,
             LastName = person.LastName
         });
@@ -36,7 +36,7 @@ public class PersonController : ControllerBase {
         return _context.Persons
                     .Skip(offset).Take(Math.Max(amount, 100))
                     .Select(x => new PersonGetResponse { 
-                        UserId = x.UserId,
+                        UserId = x.PersonId,
                         FirstName = x.FirstName,
                         LastName = x.LastName
                     });

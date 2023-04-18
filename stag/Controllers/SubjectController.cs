@@ -51,12 +51,12 @@ public class SubjectController : ControllerBase
 
     [HttpGet("GetTimetableEvents")]
     public async Task<IEnumerable<TimetableEventGetResponse>> GetSubjectTimetableEvents(int subjectId) {
-        return (await subjectService.GetSubjectTimetableEvents(subjectId)).Select(x => new TimetableEventGetResponse() {
-            TimetableEventId = x.TimetableEventId,
-            SubjectId = x.SubjectId,
-            EventType = (int)x.EventType,
-            OwnerId = x.OwnerId
-        });
+        return await subjectService.GetSubjectTimetableEvents(subjectId);
+    }
+
+    [HttpGet("GetSubjectRelations")]
+    public async Task<IEnumerable<SubjectRelationGetResponse>> GetSubjectRelations(int subjectId) {
+        return await subjectService.GetSubjectRelations(subjectId);
     }
 
     [Authorize(Policy="IsLecturer")]
@@ -115,7 +115,7 @@ public class SubjectController : ControllerBase
     }
 
     [Authorize(Policy="IsGarant")]
-    [HttpPost("SetPracticioner/{userId}")]
+    [HttpGet("SetPracticioner/{userId}")]
     public async Task<IActionResult> AddPracticioner(int subjectId, string userId)
     {
         await subjectService.AddPracticioner(subjectId, userId);
@@ -125,7 +125,7 @@ public class SubjectController : ControllerBase
     }
 
     [Authorize(Policy="IsGarant")]
-    [HttpPost("SetTutor/{userId}")]
+    [HttpGet("SetTutor/{userId}")]
     public async Task<IActionResult> AddLecturer(int subjectId, string userId)
     {
         await subjectService.AddLecturer(subjectId, userId);

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Model.Request;
+using Model.Response;
 using stag.Database;
 using stag.Database.Models;
 using Stag.Database.Models;
@@ -142,7 +143,36 @@ public class SubjectService {
         await _context.TimetableEventTimes.AddRangeAsync(entities);
     }
 
-    public async Task<IEnumerable<TimetableEvent>> GetSubjectTimetableEvents(int subjectId) {
-        return _context.TimetableEvents.Where(x => x.SubjectId == subjectId);
+    public async Task<IEnumerable<TimetableEventGetResponse>> GetSubjectTimetableEvents(int subjectId) {
+        return _context.TimetableEvents.Where(x => x.SubjectId == subjectId)
+        .Join(_context.Persons,
+            ev => ev.OwnerId,
+            person => person.PersonId,
+            (ev, person) => new TimetableEventGetResponse() {
+                TimetableEventId = ev.TimetableEventId,
+                SubjectId = ev.SubjectId,
+                EventType = (int)ev.EventType,
+                Owner = new PersonGetResponse() {
+                    UserId = person.PersonId,
+                    FirstName = person.FirstName,
+                    LastName = person.LastName
+                }
+            });
+    }
+
+    public async Task<IEnumerable<SubjectRelationGetResponse>> GetSubjectRelations(int subjectId) {
+        return _context.SubjectRelations.Where(x => x.SubjectId == subjectId)
+                                        .Join(_context.Persons,
+                                        relation => relation.UserId,
+                                        person => person.PersonId,
+                                        (relation, person) => new SubjectRelationGetResponse() {
+                                            SubjectId = relation.SubjectId,
+                                            Person = new PersonGetResponse() {
+                                                UserId = person.PersonId,
+                                                FirstName = person.FirstName,
+                                                LastName = person.LastName
+                                            },
+                                            RelationType = (int)relation.RelationType
+                                        });
     }
 }

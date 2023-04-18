@@ -22,6 +22,12 @@ public class SubjectSetForm {
     public IEnumerable<SubjectTimeForm> Times { get; set; }
 }
 
+public class AddUserForm {
+    public int SubjectId { get; set; }
+    public string UserId { get; set; }
+    public int Role { get; set; }
+}
+
 public class Subjects : PageModel
 {
     public List<SubjectGetResponse> subjects { get; set; } = new List<SubjectGetResponse>();
@@ -32,9 +38,24 @@ public class Subjects : PageModel
     private SubjectHandler subjectHandler = new SubjectHandler();
 
     public List<TimetableEventGetResponse> TimetableEvents { get; set; } = new List<TimetableEventGetResponse>();
+    public List<SubjectRelationGetResponse> SubjectRelations { get; set; } = new List<SubjectRelationGetResponse>();
 
     [BindProperty]
     public SubjectSetForm subjectSetForm { get; set; }
+
+    public async Task<IActionResult> OnPostAddUser(AddUserForm form) {
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+
+        switch(form.Role) {
+            case 0:
+                await subjectHandler.SetPracticioner(form.SubjectId, form.UserId);
+                break;
+            case 1:
+                await subjectHandler.SetTutor(form.SubjectId, form.UserId);
+                break;
+        }
+        return Page();
+    }
 
     /// <summary>
     /// On posting the changing form
@@ -81,6 +102,7 @@ public class Subjects : PageModel
             subject = subjects.FirstOrDefault(x => x.SubjectId == int.Parse((string)(RouteData.Values["subjectId"])));
         
             TimetableEvents = (await subjectHandler.GetTimetableEvents(subject.SubjectId)).ToList();
+            SubjectRelations = (await subjectHandler.GetSubjectRelations(subject.SubjectId)).ToList();
         }
 
         return Page();
