@@ -67,8 +67,8 @@ CREATE TABLE public.AspNetUserLogins
 
 
 
-CREATE TABLE IF NOT EXISTS person (
-    person_id VARCHAR(256) PRIMARY KEY REFERENCES aspnetusers(Id)
+CREATE TABLE IF NOT EXISTS persons (
+    person_id VARCHAR(256) PRIMARY KEY REFERENCES aspnetusers(Id),
     first_name VARCHAR(256) NOT NULL,
     last_name VARCHAR(256) NOT NULL
 );
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS timetable_events (
 
 CREATE TABLE IF NOT EXISTS timetable_event_times (
     timetable_event_time_id SERIAL PRIMARY KEY,
-    timetable_event_id INTEGER REFERENCES timetable_events(timetable_event_id) NOT NULL ON DELETE CASCADE,
+    timetable_event_id INTEGER NOT NULL REFERENCES timetable_events(timetable_event_id) ON DELETE CASCADE,
     starts_at TIMESTAMP NOT NULL,
     ends_at TIMESTAMP NOT NULL
 );

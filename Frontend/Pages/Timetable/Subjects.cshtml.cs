@@ -60,13 +60,17 @@ public class Subjects : PageModel
     public async Task<IActionResult> OnPostAddUser(AddUserForm form) {
         subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
 
-        switch(form.Role) {
-            case 0:
-                await subjectHandler.SetPracticioner(form.SubjectId, form.UserId);
-                break;
-            case 1:
-                await subjectHandler.SetTutor(form.SubjectId, form.UserId);
-                break;
+        try {
+            switch(form.Role) {
+                case 0:
+                    await subjectHandler.SetPracticioner(form.SubjectId, form.UserId);
+                    break;
+                case 1:
+                    await subjectHandler.SetTutor(form.SubjectId, form.UserId);
+                    break;
+            }
+        } catch {
+
         }
         return Page();
     }
@@ -84,14 +88,20 @@ public class Subjects : PageModel
 
     public async Task<IActionResult> OnPostAddTimetableEvent(int subjectId, int type) {
         subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
-        Console.WriteLine($"Addint timetable for {subjectId} and type {type}");
-        switch(type) {
-            case 0:
-                await subjectHandler.AddLectureEvent(subjectId);
-                break;
-            case 1:
-                await subjectHandler.AddPractiseEvent(subjectId);
-                break;
+        
+        try {
+            switch(type) {
+                case 0:
+                    await subjectHandler.AddLectureEvent(subjectId);
+                    break;
+                case 1:
+                    await subjectHandler.AddPractiseEvent(subjectId);
+                    break;
+            }
+        } catch(HttpRequestException e) {
+            
+        } catch(Exception e) {
+            
         }
 
 
@@ -100,20 +110,29 @@ public class Subjects : PageModel
 
     public async Task<IActionResult> OnPostAddTime(AddTimeForm form) {
         subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
-        await subjectHandler.AddTime(form.SubjectId, form.EventId, new List<SubjectSetTimeRequest>() {
-            new SubjectSetTimeRequest() {
-                StartsAt = form.StartDate.ToDateTime(form.StartTime),
-                EndsAt = form.StartDate.ToDateTime(form.EndTime),
-                Frequence = form.Frequency
-            }
-        });
+
+        try {
+            await subjectHandler.AddTime(form.SubjectId, form.EventId, new List<SubjectSetTimeRequest>() {
+                new SubjectSetTimeRequest() {
+                    StartsAt = form.StartDate.ToDateTime(form.StartTime),
+                    EndsAt = form.StartDate.ToDateTime(form.EndTime),
+                    Frequence = form.Frequency
+                }
+            });
+        } catch {
+
+        }
 
         return Page();
     }
 
     public async Task<IActionResult> OnPostDeleteEventTime(int subjectId, int eventId, int eventTimeId) {
         subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
-        await subjectHandler.DeleteTimetableEventTime(subjectId, eventId, eventTimeId);
+        try {
+            await subjectHandler.DeleteTimetableEventTime(subjectId, eventId, eventTimeId);
+        } catch {
+
+        }
 
         return Page();
     }
@@ -125,7 +144,6 @@ public class Subjects : PageModel
     /// <returns></returns>
     public async Task<IActionResult> OnPostAsync(SubjectSetForm form) {
 
-        Console.WriteLine("Updating subject");
         try {
             SubjectSetRequest request = new SubjectSetRequest() {
                 Name = form.Name,
@@ -165,6 +183,7 @@ public class Subjects : PageModel
         
             TimetableEvents = (await subjectHandler.GetTimetableEvents(subject.SubjectId)).ToList();
             SubjectRelations = (await subjectHandler.GetSubjectRelations(subject.SubjectId)).ToList();
+            Console.WriteLine($"Relations {SubjectRelations.Count}");
         }
 
         if(RouteData.Values["eventId"] != null) {
@@ -172,6 +191,8 @@ public class Subjects : PageModel
 
             if(Event != null)
                 EventTimes = (await subjectHandler.GetTimetableEventTimes(subject.SubjectId, Event.TimetableEventId)).ToList();
+
+                Console.WriteLine($"Event Times: {EventTimes.Count}");
         }
 
         return Page();

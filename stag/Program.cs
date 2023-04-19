@@ -158,6 +158,12 @@ if(config.Initialize) {
             Console.WriteLine($"UserId: {userId}");
 
             using(var context = new StagContext()) {
+                context.Persons.Add(new Person() {
+                    PersonId = userId,
+                    FirstName = "Admin",
+                    LastName = "Admin"
+                });
+
                 context.Semesters.Add(new Semester() {
                     StartsAt = new DateTime(2023, 2, 13).ToUniversalTime(),
                     EndsAt = new DateTime(2023, 5, 12).ToUniversalTime(),
@@ -179,13 +185,15 @@ if(config.Initialize) {
                 var algebra = await departmentService.CreateSubject(department.Entity.DepartmentId, new Model.Request.SubjectPutRequest() {
                     Name = "Algebra 2",
                     ShortName = "AL2",
-                    Description = "Some description of algebra"
+                    Description = "Some description of algebra",
+                    GarantUserId = userId
                 });
 
                 var jcs = await departmentService.CreateSubject(department.Entity.DepartmentId, new Model.Request.SubjectPutRequest() {
                     Name = "JCS 2",
                     ShortName = "JCS2",
-                    Description = "Some description of C#"
+                    Description = "Some description of C#",
+                    GarantUserId = userId
                 });
 
                 await context.SaveChangesAsync();

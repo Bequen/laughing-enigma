@@ -18,7 +18,7 @@ class ApiHandler {
     public ApiHandler(String url, string? auth) {
         this.AuthToken = auth;
         
-        client.BaseAddress = new Uri("http://localhost:8080/" + url);
+        client.BaseAddress = new Uri("http://backend:80/" + url);
         client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
 

@@ -211,7 +211,7 @@
                                     </form>
                                 </div>
                         } else {
-                            <div class="mb-1 rounded p-3 border border-2 border-primary d-flex justify-content-between">
+                            <a href="/Timetable/Subjects/@(Model.subject.SubjectId)/@ev.TimetableEventId" class="mb-1 rounded p-3 border border-2 d-flex justify-content-between">
                                 @switch (ev.EventType)
                                 {
                                     case 0:
@@ -234,7 +234,7 @@
                                         </svg>
                                     </button>
                                 </form>
-                            </div>
+                            </a>
                         }
                 }
 
