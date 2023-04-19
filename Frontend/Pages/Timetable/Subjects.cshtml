@@ -1,4 +1,4 @@
-@page "/Timetable/Subjects/{subjectId?}"
+@page "/Timetable/Subjects/{subjectId?}/{eventId?}"
 @model Frontend.Pages.Timetable.Subjects
 
 @{
@@ -75,6 +75,7 @@
 
 <div class="subjects">
     <div class="list-group list-group-checkable d-grid gap-2 border-0 w-100 align-items-start">
+        <h2>My subjects</h2>
         @if (Model.subjects != null) {
             @foreach(var subject in Model.subjects)
             {
@@ -94,7 +95,7 @@
         }
     </div>
     @if(Model.subject != null) {
-        <div class="subject-info small">
+        <div class="subject-info">
             <form method="post">
                 <input name="subjectId" type="number" class="d-none" value="@Model.subject.SubjectId">
                 <div class="input-group mb-3">
@@ -130,10 +131,10 @@
                         @switch (ev.RelationType)
                         {
                             case 0:
-                                <span class="badge bg-secondary">Enrolled</span>
+                                <span class="badge" style="background-color=blue">Enrolled</span>
                                 break;
                             case 1:
-                                <span class="badge bg-secondary">Garant</span>
+                                <span class="badge" style="background-color: blue">Garant</span>
                                 break;
                             case 2:
                                 <span class="badge bg-secondary">Lecturer</span>
@@ -144,19 +145,181 @@
                         }
                     </div>
                 }
-                <div>
-                    <form method="post" asp-page-handler="AddUser">
+                <div class="my-3">
+                    <form class="d-flex flex-row " method="post" asp-page-handler="AddUser">
                         <input name="subjectId" type="number" class="d-none" value="@Model.subject.SubjectId">
-                        <input name="userId" id="userId" type="text">
 
-                        <select id="Role" name="Role">
+                        <div class="flex-fill">
+                            <label for="userId">User Id:</label>
+                            <input class="form-control form-control-sm" name="userId" id="userId" type="text">
+                        </div>
+
+                        <div class="ms-3">
+                            <label for="Role">Role:</label>
+                            <select class="form-select form-select-sm" id="Role" name="Role">
+                                <option value="0">Lecture</option>
+                                <option value="1">Practise</option>
+                                <option value="2">Seminar</option>
+                            </select>
+                        </div>
+
+                        <div class="ms-3 d-flex flex-col align-items-end">
+                            <input type="submit" class="btn btn-primary btn-sm" value="Add">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <h4>Events</h4>
+                <form class="my-3" method="post" asp-page-handler="AddTimetableEvent">
+                    <div class="d-flex flex-row">
+                        <select name="type" class="form-select form-select-sm">
                             <option value="0">Lecture</option>
                             <option value="1">Practise</option>
-                            <option value="2">Seminar</option>
                         </select>
+                        <input hidden type="number" name="subjectId" value="@Model.subject.SubjectId">
 
-                        <input type="submit" class="btn btn-primary btn-sm" value="Add">
+                        <input class="ms-3 btn btn-primary btn-sm" type="submit" value="Add">
+                    </div>
+                </form>
+                @foreach(var ev in Model.TimetableEvents) {
+                        @if(Model.Event != null && Model.Event.TimetableEventId == ev.TimetableEventId) {
+                                <div class="mb-1 rounded p-3 border border-2 border-primary d-flex justify-content-between">
+                                    @switch (ev.EventType)
+                                    {
+                                        case 0:
+                                            <h6 class="m-0">Lecture</h6>
+                                            break;
+                                        case 1:
+                                            <h6 class="m-0">Practice</h6>
+                                            break;
+                                        case 2:
+                                            <h6 class="m-0">Seminar</h6>
+                                            break;
+                                    }
+                                    <small>@ev.Owner.FirstName @ev.Owner.LastName</small>
+
+                                    <form method="post" asp-page-handler="DeleteEvent">
+                                        <input hidden type="number" name="EventId" value="@ev.TimetableEventId">
+                                        <button class="btn btn-sm btn-danger">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                        } else {
+                            <div class="mb-1 rounded p-3 border border-2 border-primary d-flex justify-content-between">
+                                @switch (ev.EventType)
+                                {
+                                    case 0:
+                                        <h6 class="m-0">Lecture</h6>
+                                        break;
+                                    case 1:
+                                        <h6 class="m-0">Practice</h6>
+                                        break;
+                                    case 2:
+                                        <h6 class="m-0">Seminar</h6>
+                                        break;
+                                }
+                                <small>@ev.Owner.FirstName @ev.Owner.LastName</small>
+                                <form method="post" asp-page-handler="DeleteEvent">
+                                    <input hidden type="number" name="EventId" value="@ev.TimetableEventId">
+                                    <button class="btn btn-sm btn-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                }
+
+                <div class="my-3">
+                    @if(Model.Event != null) {
+                    <h4>Times</h4>
+                    <form class="my-3" method="post" asp-page-handler="AddTime">
+                        <input hidden type="number" name="subjectId" value="@Model.subject.SubjectId">
+                        <input hidden type="number" name="eventId" value="@Model.Event.TimetableEventId">
+
+                        <div class="d-flex flex-row">
+                            <div>
+                                <label for="startDate">Start date</label>
+                                <input class="form-control form-control-sm" type="date" name="startDate">
+                            </div>
+
+                            <div class="ms-3 d-flex flex-fill justify-content-between">
+                                <div>
+                                    <label for="startTime">Start time</label>
+                                    <input class="form-control form-control-sm" type="time" name="startTime">
+                                </div>
+                                <div>
+                                    <label for="endTime">End time</label>
+                                    <input class="form-control form-control-sm" type="time" name="endTime">
+                                </div>
+                            </div>
+                            <div class="ms-3">
+                                <label for="Frequency">Frequency</label>
+                                <select class="form-select form-select-sm" name="Frequency">
+                                    <option value="0">Once</option>
+                                    <option value="1">Even Weeks</option>
+                                    <option value="2">Every Week</option>
+                                </select>
+                            </div>
+
+                            <div class="ms-3 d-flex flex-col align-items-end">
+                                <input class="align-bottom btn btn-primary btn-sm" type="submit" value="Add">
+                            </div>
+                        </div>
                     </form>
+
+                    <table>
+                        <thead>
+                            <th>From</th>
+                            <th>To</th>
+                            <th></th>
+                        </thead>
+                        @foreach(var time in Model.EventTimes) {
+                            <tr>
+                                @{
+                                    var from = time.StartsAt.ToString("yyyy-MM-dd");
+                                    var fromTime = time.StartsAt.ToString("HH:mm:ss");
+                                    var to = time.EndsAt.ToString("yyyy-MM-dd");
+                                    var toTime = time.EndsAt.ToString("HH:mm:ss");
+                                }
+                                <td>
+                                    <div class="input-group">
+                                        <input class="form-control form-control-sm" type="date" value="@from">
+                                        <input class="form-control form-control-sm" type="time" value="@fromTime">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        
+                                        <input class="form-control form-control-sm" type="date" value="@to">
+                                        <input class="form-control form-control-sm" type="time" value="@toTime">
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <form method="post" asp-page-handler="DeleteEventTime">
+                                        <input hidden type="number" name="eventTimeId" value="@time.TimetableEventTimeId">
+                                        <input hidden type="number" name="eventId" value="@Model.Event.TimetableEventId">
+                                        <input hidden type="number" name="subjectId" value="@Model.subject.SubjectId">
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                    }
                 </div>
             </div>
         </div>

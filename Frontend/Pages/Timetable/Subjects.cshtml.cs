@@ -28,6 +28,17 @@ public class AddUserForm {
     public int Role { get; set; }
 }
 
+public class AddTimeForm {
+    public int SubjectId { get; set; }
+    public int EventId { get; set; }
+
+    public DateOnly StartDate { get; set; }
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
+
+    public int Frequency { get; set; }
+}
+
 public class Subjects : PageModel
 {
     public List<SubjectGetResponse> subjects { get; set; } = new List<SubjectGetResponse>();
@@ -37,8 +48,11 @@ public class Subjects : PageModel
 
     private SubjectHandler subjectHandler = new SubjectHandler();
 
+    public TimetableEventGetResponse Event { get; set; } = null;
     public List<TimetableEventGetResponse> TimetableEvents { get; set; } = new List<TimetableEventGetResponse>();
     public List<SubjectRelationGetResponse> SubjectRelations { get; set; } = new List<SubjectRelationGetResponse>();
+
+    public List<TimetableEventTimeGetResponse> EventTimes { get; set; } = new List<TimetableEventTimeGetResponse>();
 
     [BindProperty]
     public SubjectSetForm subjectSetForm { get; set; }
@@ -54,6 +68,53 @@ public class Subjects : PageModel
                 await subjectHandler.SetTutor(form.SubjectId, form.UserId);
                 break;
         }
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostDeleteEvent(int subjectId, int eventId) {
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+        try {
+            await subjectHandler.DeleteTimetableEvent(subjectId, eventId);
+        } catch {
+            
+        }
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAddTimetableEvent(int subjectId, int type) {
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+        Console.WriteLine($"Addint timetable for {subjectId} and type {type}");
+        switch(type) {
+            case 0:
+                await subjectHandler.AddLectureEvent(subjectId);
+                break;
+            case 1:
+                await subjectHandler.AddPractiseEvent(subjectId);
+                break;
+        }
+
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAddTime(AddTimeForm form) {
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+        await subjectHandler.AddTime(form.SubjectId, form.EventId, new List<SubjectSetTimeRequest>() {
+            new SubjectSetTimeRequest() {
+                StartsAt = form.StartDate.ToDateTime(form.StartTime),
+                EndsAt = form.StartDate.ToDateTime(form.EndTime),
+                Frequence = form.Frequency
+            }
+        });
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostDeleteEventTime(int subjectId, int eventId, int eventTimeId) {
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+        await subjectHandler.DeleteTimetableEventTime(subjectId, eventId, eventTimeId);
+
         return Page();
     }
 
@@ -98,11 +159,19 @@ public class Subjects : PageModel
             throw;
         }
 
-        if(RouteData.Values["subjectId"] != null) {
-            subject = subjects.FirstOrDefault(x => x.SubjectId == int.Parse((string)(RouteData.Values["subjectId"])));
+        int subjectId = 0;
+        if(RouteData.Values["subjectId"] != null && int.TryParse((string)(RouteData.Values["subjectId"]), out subjectId)) {
+            subject = subjects.FirstOrDefault(x => x.SubjectId == subjectId);
         
             TimetableEvents = (await subjectHandler.GetTimetableEvents(subject.SubjectId)).ToList();
             SubjectRelations = (await subjectHandler.GetSubjectRelations(subject.SubjectId)).ToList();
+        }
+
+        if(RouteData.Values["eventId"] != null) {
+            Event = TimetableEvents.FirstOrDefault(x => x.TimetableEventId == int.Parse((string)(RouteData.Values["eventId"])));
+
+            if(Event != null)
+                EventTimes = (await subjectHandler.GetTimetableEventTimes(subject.SubjectId, Event.TimetableEventId)).ToList();
         }
 
         return Page();

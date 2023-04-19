@@ -33,7 +33,7 @@ class ApiHandler {
     }
 
     protected async Task<HttpResponseMessage> Get(String endpoint) {
-        Console.WriteLine($"Seding get to: {client.BaseAddress + endpoint}");
+        Console.WriteLine($"Sending get to: {client.BaseAddress + endpoint}");
 
         var response = client.GetAsync(endpoint).Result;
         response.EnsureSuccessStatusCode();
@@ -48,9 +48,15 @@ class ApiHandler {
     }
 
     protected async Task<HttpResponseMessage> Put<T>(String endpoint, T data) {
-        Console.WriteLine($"Seding post to: {client.BaseAddress + endpoint}");
+        Console.WriteLine($"Sending post to: {client.BaseAddress + endpoint}");
         var response = client.PutAsJsonAsync<T>(endpoint, data).Result;
         response.EnsureSuccessStatusCode();
         return response;
+    }
+
+    protected async Task<HttpResponseMessage> Delete(String endpoint) {
+        Console.WriteLine($"Sending delete to: {client.BaseAddress + endpoint}");
+        var response = client.DeleteAsync(endpoint);
+        return await response;
     }
 }

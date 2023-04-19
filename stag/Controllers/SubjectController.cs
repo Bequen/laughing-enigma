@@ -54,6 +54,32 @@ public class SubjectController : ControllerBase
         return await subjectService.GetSubjectTimetableEvents(subjectId);
     }
 
+    [HttpGet("TimetableTimes/{eventId}")]
+    public IEnumerable<TimetableEventTimeGetResponse> TimetableTimes(int subjectId, int eventId) {
+        return context.TimetableEventTimes.Where(x => x.TimetableEventId == eventId)
+                                          .Select(x => new TimetableEventTimeGetResponse() {
+                                              TimetableEventTimeId = x.TimetableEventTimeId,
+                                              StartsAt = x.StartsAt,
+                                              EndsAt = x.EndsAt
+                                          });
+    }
+
+    [HttpDelete("TimetableEvent/{eventId}")]
+    public async Task<IActionResult> DeleteTimetableEvent(int subjectId, int eventId) {
+        Console.WriteLine("Deleting event");
+        await subjectService.DeleteTimetableEvent(subjectId, eventId);
+
+        return Ok();
+    }
+
+    [HttpDelete("TimetableEvent/{eventId}/Time/{timeId}")]
+    public async Task<IActionResult> DeleteTimetableEventTime(int subjectId, int eventId, int timeId) {
+        Console.WriteLine("Deleting time");
+        await subjectService.DeleteTimetableEventTime(subjectId, eventId, timeId);
+
+        return Ok();
+    }
+
     [HttpGet("GetSubjectRelations")]
     public async Task<IEnumerable<SubjectRelationGetResponse>> GetSubjectRelations(int subjectId) {
         return await subjectService.GetSubjectRelations(subjectId);

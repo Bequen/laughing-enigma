@@ -63,6 +63,14 @@ public class SubjectService {
         }
     }
 
+    public async Task DeleteTimetableEvent(int subjectId, int eventId) {
+        await _context.TimetableEvents.Where(x => x.TimetableEventId == eventId).ExecuteDeleteAsync();
+    }
+
+    public async Task DeleteTimetableEventTime(int subjectId, int eventId, int timeId) {
+        await _context.TimetableEventTimes.Where(x => x.TimetableEventTimeId == timeId).ExecuteDeleteAsync();
+    }
+
     public async Task SetGarant(int subjectId, string userId) {
         await _context.SubjectRelations.AddAsync(new SubjectRelation()
         {
