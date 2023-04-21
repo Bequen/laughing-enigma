@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS semester_events (
 
 CREATE TABLE IF NOT EXISTS timetable_events (
     timetable_event_id SERIAL PRIMARY KEY,
-    subject_id INTEGER REFERENCES subjects(subject_id) NOT NULL,
+    subject_id INTEGER NOT NULL REFERENCES subjects(subject_id) ON DELETE CASCADE,
     event_type INTEGER NOT NULL,
     owner_id VARCHAR(255) REFERENCES aspnetusers(id) NOT NULL
 );
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS timetable_event_times (
 
 CREATE TABLE IF NOT EXISTS subject_relations (
     subject_relation_id SERIAL PRIMARY KEY,
-    subject_id INTEGER REFERENCES subjects(subject_id) NOT NULL,
+    subject_id INTEGER NOT NULL REFERENCES subjects(subject_id) ON DELETE CASCADE,
     user_id VARCHAR(255) REFERENCES aspnetusers(id) NOT NULL,
     relation_type INTEGER NOT NULL,
     UNIQUE(subject_id, user_id, relation_type)

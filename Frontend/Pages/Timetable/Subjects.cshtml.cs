@@ -137,6 +137,17 @@ public class Subjects : PageModel
         return Page();
     }
 
+    public async Task<IActionResult> OnPostDeleteSubject(int subjectId) {
+        subjectHandler.AuthToken = Request.Cookies["user_token"] as string;
+        try {
+            await subjectHandler.DeleteSubject(subjectId);
+        } catch {
+
+        }
+
+        return Page();
+    }
+
     /// <summary>
     /// On posting the changing form
     /// </summary>
@@ -180,7 +191,10 @@ public class Subjects : PageModel
         int subjectId = 0;
         if(RouteData.Values["subjectId"] != null && int.TryParse((string)(RouteData.Values["subjectId"]), out subjectId)) {
             subject = subjects.FirstOrDefault(x => x.SubjectId == subjectId);
-        
+            
+            if(subject == null) {
+                return Page();
+            }
             TimetableEvents = (await subjectHandler.GetTimetableEvents(subject.SubjectId)).ToList();
             SubjectRelations = (await subjectHandler.GetSubjectRelations(subject.SubjectId)).ToList();
             Console.WriteLine($"Relations {SubjectRelations.Count}");

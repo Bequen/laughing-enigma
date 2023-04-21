@@ -66,7 +66,6 @@ public class SubjectController : ControllerBase
 
     [HttpDelete("TimetableEvent/{eventId}")]
     public async Task<IActionResult> DeleteTimetableEvent(int subjectId, int eventId) {
-        Console.WriteLine("Deleting event");
         await subjectService.DeleteTimetableEvent(subjectId, eventId);
 
         return Ok();
@@ -74,11 +73,18 @@ public class SubjectController : ControllerBase
 
     [HttpDelete("TimetableEvent/{eventId}/Time/{timeId}")]
     public async Task<IActionResult> DeleteTimetableEventTime(int subjectId, int eventId, int timeId) {
-        Console.WriteLine("Deleting time");
         await subjectService.DeleteTimetableEventTime(subjectId, eventId, timeId);
 
         return Ok();
     }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteSubject(int subjectId) {
+        await subjectService.DeleteSubject(subjectId);
+
+        return Ok();
+    }
+
 
     [HttpGet("GetSubjectRelations")]
     public async Task<IEnumerable<SubjectRelationGetResponse>> GetSubjectRelations(int subjectId) {

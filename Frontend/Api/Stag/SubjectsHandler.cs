@@ -56,6 +56,10 @@ class SubjectHandler : ApiHandler {
         var response = await Delete($"{subjectId}/TimetableEvent/{eventId}/Time/{eventTimeId}");
     }
 
+    public async Task DeleteSubject(int subjectId) {
+        var response = await Delete($"{subjectId}");
+    }
+
     public async Task<IEnumerable<SubjectRelationGetResponse>> GetSubjectRelations(int subjectId) {
         var response = await Get($"{subjectId}/GetSubjectRelations");
         return await response.Content.ReadFromJsonAsync<IEnumerable<SubjectRelationGetResponse>>() ?? new List<SubjectRelationGetResponse>();

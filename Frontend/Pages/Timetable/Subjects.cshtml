@@ -77,22 +77,47 @@
     <div class="list-group list-group-checkable d-grid gap-2 border-0 w-100 align-items-start">
         <h2>My subjects</h2>
         @if (Model.subjects != null) {
-            @foreach(var subject in Model.subjects)
+            @foreach(var subject in Model.subjects.GroupBy(x => x.SubjectId, y => y, (x, y) => y.First()))
             {
                 @* <input class="list-group-item-check pe-none" type="radio" name="listGroupCheckableRadios" id="listGroupCheckableRadios@(subject.SubjectId)" value=""> *@
                 @if(Model.subject != null && subject.SubjectId == Model.subject.SubjectId) {
-                    <a class="list-group-item list-group-item-checked rounded-3 py-3" for="listGroupCheckableRadios@(subject.SubjectId)">
-                        @subject.Name
-                        <span class="d-block small opacity-50">@subject.Description</span>
+                    <a class="d-flex flex-row justify-content-between list-group-item list-group-item-checked rounded-3 py-3" for="listGroupCheckableRadios@(subject.SubjectId)">
+                        <div>
+                            @subject.Name
+                            <span class="d-block small opacity-50">@subject.Description</span>
+                        </div>
+                        <div>
+                            <form method="post" asp-page-handler="DeleteSubject">
+                                <input hidden type="number" value="@subject.SubjectId">
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </a>
                 } else {
-                    <a href="/Timetable/Subjects/@(subject.SubjectId)" class="list-group-item rounded-3 py-3" for="listGroupCheckableRadios@(subject.SubjectId)">
-                        @subject.Name
-                        <span class="d-block small opacity-50">@subject.Description</span>
+                    <a href="/Timetable/Subjects/@subject.SubjectId" class="d-flex flex-row justify-content-between list-group-item rounded-3 py-3" for="listGroupCheckableRadios@(subject.SubjectId)">
+                        <div>
+                            @subject.Name
+                            <span class="d-block small opacity-50">@subject.Description</span>
+                        </div>
+                        <div>
+                            <form method="post" asp-page-handler="DeleteSubject">
+                                <input hidden type="number" value="@subject.SubjectId">
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </a>
                 }
             }
         }
+        <a href="/Timetable/Subjects/CreateForm" class="btn btn-primary btn-primary-sm">Create</a>
     </div>
     @if(Model.subject != null) {
         <div class="subject-info">
