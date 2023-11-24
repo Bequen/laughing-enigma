@@ -39,7 +39,7 @@ services:
     networks:
       - stag-network
     volumes:
-      - appdata:/stag/config/
+      - ./stag/:/stag/:Z
 
 volumes:
   pgdata:

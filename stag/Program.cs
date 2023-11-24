@@ -137,7 +137,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-if(config.Initialize) {
+if(config.Initialize && false) {
     try {
         Console.WriteLine("Initializing");
         var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
@@ -235,5 +235,9 @@ if(config.Initialize) {
         throw;
     }
 }
+
+config.Save();
+
+Console.WriteLine("Running");
 
 app.Run();

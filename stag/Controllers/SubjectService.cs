@@ -26,6 +26,8 @@ public class SubjectService {
             row.Description = subject.Description;
             row.Name = subject.Name;
             row.ShortName = subject.ShortName;
+            
+            await _context.SaveChangesAsync();
         } else {
             throw new Exception("No such subject");
         }
@@ -39,7 +41,7 @@ public class SubjectService {
                 OwnerId = userId
             });
 
-            // await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return result.Entity;
         } else {
@@ -55,7 +57,7 @@ public class SubjectService {
                 OwnerId = userId
             });
 
-            // await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return result.Entity;
         } else {
@@ -104,10 +106,10 @@ public class SubjectService {
 
     private async Task<List<TimetableEventTime>> CreateTimesWithFrequency(int eventId, SubjectSetTimeRequest time, int jumpDays) {
         var entities = new List<TimetableEventTime>();
-        var semester = _context.Semesters.Include(x => x.Events)
-                            .Where(x => x.StartsAt <= time.StartsAt.ToUniversalTime() &&
-                                        x.EndsAt >= time.EndsAt.ToUniversalTime())
-                            .FirstOrDefault();
+        var semester = _context.Semesters
+            .Include(x => x.Events)
+            .FirstOrDefault(x => x.StartsAt <= time.StartsAt.ToUniversalTime() &&
+                                 x.EndsAt >= time.EndsAt.ToUniversalTime());
 
         if(semester == null) {
             throw new Exception("Failed to find semester for subject. Please insert a semester to be able to insert timetable with frequency.");
@@ -123,6 +125,8 @@ public class SubjectService {
             time.StartsAt = time.StartsAt.AddDays(jumpDays);
             time.EndsAt = time.EndsAt.AddDays(jumpDays);
         }
+
+        await _context.SaveChangesAsync();
 
         return entities;
     }
