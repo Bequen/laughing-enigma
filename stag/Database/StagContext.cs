@@ -60,6 +60,7 @@ public class StagContext : DbContext
     public IEnumerable<Subject> SetSubjects(string? token) {
         TokenService tokenService= new TokenService();
         var principal = tokenService.Validate(token);
+        
         var id = principal.FindFirst(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
         return Subjects.Join(SubjectRelations,

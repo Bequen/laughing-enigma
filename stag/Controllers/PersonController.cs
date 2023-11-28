@@ -20,7 +20,7 @@ public class PersonController : ControllerBase {
 
     [HttpPost("Add")]
     public async Task<IActionResult> Add([FromBody] PersonAddRequest person) {
-        _context.Persons.Add(new Person {
+        var created = _context.Persons.Add(new Person {
             PersonId = person.UserId,
             FirstName = person.FirstName,
             LastName = person.LastName
@@ -28,7 +28,7 @@ public class PersonController : ControllerBase {
 
         await _context.SaveChangesAsync();
 
-        return Ok();
+        return Created(created.Entity.PersonId, created.Entity);
     }
 
     [HttpGet("GetUsers")]

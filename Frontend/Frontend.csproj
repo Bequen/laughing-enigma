@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
@@ -15,6 +15,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Model\Model.csproj" />
+
     </ItemGroup>
+
+
+
+
 
 </Project>
