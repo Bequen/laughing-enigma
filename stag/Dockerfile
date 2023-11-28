@@ -18,4 +18,4 @@ RUN dotnet publish "stag/stag.csproj" -c Debug -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "stag.dll", "-c", "/stag/config.json"]
+ENTRYPOINT ["dotnet", "stag.dll", "-c", "/appdata/config.json"]

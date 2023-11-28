@@ -25,6 +25,8 @@ services:
       - '8100:80'
     networks:
       - stag-network
+    depends_on:
+      - backend
 
   backend:
     container_name: 'backend'
@@ -39,11 +41,12 @@ services:
     networks:
       - stag-network
     volumes:
-      - ./stag/stag/:/app/stag/:Z
+      - ./stag/config/:/appdata/:Z
+    depends_on: 
+      - database
 
 volumes:
   pgdata:
-  appdata:
   
 networks:
   stag-network:

@@ -1,4 +1,4 @@
-Console.WriteLine("FUck");
+Console.WriteLine("Starting up");
 
 var builder = WebApplication.CreateBuilder(args);
 

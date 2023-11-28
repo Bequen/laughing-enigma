@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace Stag;
 
 class Config {
-    public static string ConfigPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "stag", "config.json");
+    public static string ConfigPath { get; set; } = Path.Combine("/appdata/", "config.json");
 
     public String DatabaseUrl { get; set; } = String.Empty;
     public String Secret { get; set; } = String.Empty;

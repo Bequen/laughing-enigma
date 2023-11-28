@@ -14,9 +14,13 @@ using Stag.Controllers;
 using Stag.Database.Models;
 using Model.Request;
 
-for (int i = 0; i < args.Count(); i++) {
+Console.WriteLine("Starting up");
+
+for (int i = 0; i < args.Length; i++) {
+    Console.WriteLine(args[i]);
     if(args[i].Equals("-c")) {
         if(i + 1 < args.Count()) {
+            Console.WriteLine($"Config path: {args[i + 1]}");
             Config.ConfigPath = args[i + 1];
         } else {
             throw new Exception("-c must be followed by a filename");
