@@ -1,4 +1,5 @@
 using System.Reflection;
+using GraphQL.AspNet.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,8 @@ for (int i = 0; i < args.Count(); i++) {
 Config config = Config.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddGraphQL();
 
 // Add services to the container.
 
@@ -237,4 +240,5 @@ config.Save();
 
 Console.WriteLine("Running");
 
+app.UseGraphQL();
 app.Run();

@@ -9,6 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="GraphQL" Version="7.6.1" />
+        <PackageReference Include="GraphQL.AspNet" Version="2.0.0-beta1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
